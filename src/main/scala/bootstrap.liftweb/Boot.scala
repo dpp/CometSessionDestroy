@@ -19,5 +19,26 @@ class Boot {
     LiftRules.setSiteMapFunc(siteMap _)
 
     LiftRules.htmlProperties.default.set((req: Req) => new Html5Properties(req.userAgent))
+
+    LiftRules.dispatch.append(NewSession)
+  }
+}
+
+import net.liftweb._
+import http._
+import rest._
+import iron9light.sandbox.cometSessionDestory.comet._
+
+object NewSession extends RestHelper {
+  serve {
+    case "newsession" :: Nil Get _ =>
+  
+      S.session.open_!.destroySessionAndContinueInNewSession {
+        () => {
+          buttonValue.set("Killed")
+          S.redirectTo("/")
+        }
+      }
+
   }
 }
